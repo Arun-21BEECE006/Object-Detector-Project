@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>About</title>
+</head>
+<body>
+    <nav>
+        <div class="menu">
+            <div class="logo">
+                <a href="/">Object Detection Website</a>
+            </div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="img">
+        <img src="templates/images/img1.jpg" id="img">
+        <!-- This div uses a background image as defined in your CSS -->
+    </div>
+    <div class="center">
+        <h1 style="color:rgb(238, 51, 51);">About - Object Detection Website</h1>
+        <p style="color:#f7f2f2;">
+            Welcome to the Object Detection App! This application uses advanced object detection algorithms to identify objects in images. 
+            Our tool is built with a combination of state-of-the-art machine learning techniques and robust backend processing. 
+            You can upload an image, and our system will analyze it to detect various objects. 
+            Whether for personal or professional use, this app provides accurate and efficient object detection solutions.
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+from flask import Flask, request, jsonify, send_from_directory
+import os
+
+app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+DETECTED_FOLDER = 'detected'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DETECTED_FOLDER'] = DETECTED_FOLDER
+
+@app.route('/detect', methods=['POST'])
+def detect_objects():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No file part'})
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'})
+
+    # Save the uploaded file
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
+
+    # Dummy detection process - replace with actual detection code
+    detected_image_path = os.path.join(app.config['DETECTED_FOLDER'], 'detected_image.jpg')
+
+    # Simulate detection by copying the uploaded image to detected folder
+    os.system(f'cp {filepath} {detected_image_path}')
+
+    # Return the URL to the detected image
+    return jsonify({'output_image': f'/static/detected/detected_image.jpg'})
+
+if __name__ == '__main__':
+    app.run(debug=True)

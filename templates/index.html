@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <title>Object Detection Website</title>
+</head>
+<body>
+    <nav>
+        <div class="menu">
+            <div class="logo">
+                <a >Object Detection Website</a>
+            </div>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div id="img">
+        <img src="templates/images/img1.jpg" id="img">
+        <!-- This div uses a background image as defined in your CSS -->
+    </div>
+
+    <div class="center">
+        <h1>Object Detection Website</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="button" onclick="detectObjects()">Detect Objects</button>
+        </form>
+        <div id="output-container">
+            <!-- Display the detected image here -->
+            <!-- <img id="output-image" src="static/detected/detected_image.jpg" alt="Detected Image"> -->
+        </div>
+    </div>
+
+    <script>
+        function detectObjects() {
+            const form = document.getElementById('upload-form');
+            const formData = new FormData(form);
+
+            fetch('/detect', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const outputImage = document.getElementById('output-image');
+                // Ensure that 'output_image' in response contains a valid URL or path
+                if (data.output_image) {
+                    outputImage.src = data.output_image;
+                } else {
+                    console.error('Image URL not found in response:', data);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
