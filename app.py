@@ -24,10 +24,11 @@ def detect():
         # Save the uploaded image
         image = request.files['image']
         uploaded_image_path = 'static/images/uploaded_image.jpg'
+        yolo = 'yolo/yolo.py'
         image.save(uploaded_image_path)
 
         # Run the object detection script
-        subprocess.run(['python', 'yolo.py', '--image', uploaded_image_path], check=True)
+        subprocess.run(['python', yolo, '--image', uploaded_image_path], check=True)
 
         # Define the output path for the detected image
         detected_image_path = 'static/detected/detected_image.jpg'
