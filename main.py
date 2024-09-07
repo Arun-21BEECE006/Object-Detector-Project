@@ -27,8 +27,11 @@ def detect():
         yolo = 'yolo/yolo.py'
         image.save(uploaded_image_path)
 
+        # Path to the YOLO script
+        yolo_script_path = os.path.join('yolo', 'yolo.py')
+
         # Run the object detection script
-        subprocess.run(['python', yolo, '--image', uploaded_image_path], check=True)
+        subprocess.run(['python', yolo_script_path, '--image', uploaded_image_path], check=True)
 
         # Define the output path for the detected image
         detected_image_path = 'static/detected/detected_image.jpg'
@@ -43,10 +46,6 @@ def detect():
     except Exception as e:
         # Return error message if something goes wrong
         return jsonify({'error': str(e)}), 500
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
 
 if __name__ == "__main__":
     from waitress import serve
