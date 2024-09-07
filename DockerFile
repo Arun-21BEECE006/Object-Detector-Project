@@ -35,26 +35,14 @@
 
 
 
-# Use an official Python runtime as a parent image
-FROM python:3.11
+# Use an official OpenCV image as a parent image
+FROM opencv/opencv:latest
 
 # Set environment variables to ensure Python outputs everything to the console
 ENV PYTHONUNBUFFERED=1
 
 # Create and set the working directory
 WORKDIR /app
-
-# Install system dependencies for OpenCV
-RUN apt-get update && \
-    apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libgl1-mesa-dri \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Set library path
-ENV LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
 
 # Copy the requirements file into the container
 COPY requirements.txt .
