@@ -1,52 +1,93 @@
+# from flask import Flask, render_template, request, jsonify
+# import subprocess
+# import os
+# import time
+
+# app = Flask(__name__)
+
+# UPLOAD_FOLDER = 'static/images'
+# OUTPUT_FOLDER = 'static/detected'
+
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
+# @app.route('/about')
+# def about():
+#     return render_template('about.html')
+
+# @app.route('/detect', methods=['POST'])
+# def detect():
+#     try:
+#         image = request.files['image']
+
+#         filename = f"input_{int(time.time())}.jpg"
+#         # input_path = os.path.join(UPLOAD_FOLDER, filename)
+#         input_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, filename))
+#         image.save(input_path)
+
+#         # run YOLO
+#         subprocess.run([
+#             'python', 'yolo.py',
+#             '--image', os.path.abspath(input_path).replace("\\", "/")
+#         ], check=True)
+#         # subprocess.run(['python', 'yolo.py', '--image', input_path], check=True)
+
+#         output_path = 'static/detected/detected_image.jpg'
+#         return jsonify({
+#             'input_image': f'/{input_path}',
+#             'output_image': f'/{output_path}?t={int(time.time())}'
+#         })
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)})
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
 from flask import Flask, render_template, request, jsonify
-import subprocess
 import os
+import time
+import subprocess
 
 app = Flask(__name__)
 
-# Ensure the static folders exist
-if not os.path.exists('static/images'):
-    os.makedirs('static/images')
+UPLOAD_FOLDER = "static/uploads"
+OUTPUT_FOLDER = "static/detected"
 
-if not os.path.exists('static/detected'):
-    os.makedirs('static/detected')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
-@app.route('/about')
-def about():
-    return render_template('about.html')
+    return render_template("index.html")
 
-@app.route('/detect', methods=['POST'])
+@app.route("/detect", methods=["POST"])
 def detect():
     try:
-        # Save the uploaded image
-        image = request.files['image']
-        uploaded_image_path = 'static/images/uploaded_image.jpg'
-        yolo = 'yolo/yolo.py'
-        image.save(uploaded_image_path)
+        file = request.files["image"]
 
-        # Path to the YOLO script
-        yolo_script_path = os.path.join('yolo', 'yolo.py')
+        filename = f"img_{int(time.time())}.jpg"
+        input_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, filename))
 
-        # Run the object detection script
-        subprocess.run(['python', yolo_script_path, '--image', uploaded_image_path], check=True)
+        file.save(input_path)
 
-        # Define the output path for the detected image
-        detected_image_path = 'static/detected/detected_image.jpg'
+        # Run YOLOv8
+        subprocess.run([
+            "python", "yolo.py",
+            "--image", input_path.replace("\\", "/")
+        ], check=True)
+        time.sleep(0.5)
 
-        # Move or rename the output file to the 'static/detected' folder
-        if os.path.exists(detected_image_path):
-            os.rename(detected_image_path, detected_image_path)
-
-        # Return the path to the output image
-        return jsonify({'output_image': f'/static/detected/detected_image.jpg'})
-    
+        return jsonify({
+            "input": f"/{UPLOAD_FOLDER}/{filename}",
+            "output": f"/static/detected/output.jpg?t={int(time.time())}"
+        })
     except Exception as e:
-        # Return error message if something goes wrong
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
+    app.run(debug=True)
