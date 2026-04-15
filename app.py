@@ -15,6 +15,10 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 # Add host validation
 ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h]
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -30,7 +34,6 @@ def detect():
         file.save(input_path)
 
         # Run YOLOv3
-        # Use python3 to ensure the same environment
         subprocess.run([
             "python3", "yolo.py",
             "--image", input_path.replace("\\", "/")
@@ -45,6 +48,5 @@ def detect():
         return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
-    # Standard Flask port for development; gunicorn will override this
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port)
